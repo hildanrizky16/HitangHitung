@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HitangHitung - Kalkulator HPP & Simulasi Grosir UMKM Kuliner</title>
+    
+    <!-- PWA Meta Tags (Persiapan Opsi 3) -->
+    <meta name="theme-color" content="#ea580c">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -43,7 +50,6 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Hapus tombol panah bawaan browser pada input number agar kotak lebih luas */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
@@ -55,65 +61,20 @@
         }
 
         /* --- STYLE OVERRIDE MODE GELAP --- */
-        html.dark body {
-            background-color: #0f172a;
-            color: #f8fafc;
-        }
-        html.dark .bg-white {
-            background-color: #1e293b !important;
-            color: #f8fafc !important;
-        }
-        html.dark .bg-slate-50 {
-            background-color: #0f172a !important;
-        }
-        html.dark .bg-slate-100 {
-            background-color: #334155 !important;
-            color: #f8fafc !important;
-        }
-        html.dark .border-slate-200,
-        html.dark .border-slate-200\/80,
-        html.dark .border-slate-300,
-        html.dark .border-slate-100,
-        html.dark .border-amber-200\/60,
-        html.dark .border-amber-100,
-        html.dark .border-brand-200\/80 {
-            border-color: #334155 !important;
-        }
-        html.dark .text-slate-900,
-        html.dark .text-slate-800,
-        html.dark .text-slate-700,
-        html.dark .text-slate-600 {
-            color: #f1f5f9 !important;
-        }
-        html.dark .text-slate-500,
-        html.dark .text-slate-400 {
-            color: #94a3b8 !important;
-        }
-        html.dark input,
-        html.dark select {
-            background-color: #0f172a !important;
-            color: #f8fafc !important;
-            border-color: #334155 !important;
-        }
-        html.dark header,
-        html.dark footer {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
-        }
-        html.dark .bg-amber-50\/60,
-        html.dark .bg-amber-50 {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
-        }
-        /* Perbaikan khusus gradient background di Mode Gelap */
-        html.dark .bg-gradient-to-r.from-amber-50 {
-            background-image: none !important;
-            background-color: #1e293b !important;
-        }
+        html.dark body { background-color: #0f172a; color: #f8fafc; }
+        html.dark .bg-white { background-color: #1e293b !important; color: #f8fafc !important; }
+        html.dark .bg-slate-50 { background-color: #0f172a !important; }
+        html.dark .bg-slate-100 { background-color: #334155 !important; color: #f8fafc !important; }
+        html.dark .border-slate-200, html.dark .border-slate-300, html.dark .border-amber-200\/60, html.dark .border-brand-200\/80 { border-color: #334155 !important; }
+        html.dark .text-slate-900, html.dark .text-slate-800, html.dark .text-slate-700 { color: #f1f5f9 !important; }
+        html.dark .text-slate-500, html.dark .text-slate-400 { color: #94a3b8 !important; }
+        html.dark input, html.dark select { background-color: #0f172a !important; color: #f8fafc !important; border-color: #334155 !important; }
+        html.dark header, html.dark footer { background-color: #1e293b !important; border-color: #334155 !important; }
+        html.dark .bg-amber-50\/60, html.dark .bg-amber-50 { background-color: #1e293b !important; border-color: #334155 !important; }
+        html.dark .bg-gradient-to-r.from-amber-50 { background-image: none !important; background-color: #1e293b !important; }
 
         @media print {
             .no-print { display: none !important; }
-            .print-only { display: block !important; }
             body { background: white !important; color: black !important; }
         }
     </style>
@@ -128,26 +89,17 @@
                     <i class="fa-solid font-bold fa-utensils text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">
-                        HitangHitung
-                    </h1>
-                    <p class="text-xs text-slate-500 hidden sm:block">Kalkulator HPP, Simulasi Grosir Kemasan & Harga Ojol UMKM</p>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">HitangHitung</h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">Kalkulator HPP, Promo & BEP UMKM</p>
                 </div>
             </div>
-
-            <!-- Quick Action Buttons -->
             <div class="flex items-center gap-2">
-                <!-- Tombol Mode Gelap -->
                 <button onclick="toggleDarkMode()" id="themeToggleBtn" class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-amber-500 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all flex items-center gap-1.5">
                     <i id="themeToggleIcon" class="fa-solid fa-moon"></i> 
                     <span id="themeToggleText" class="hidden sm:inline">Mode Gelap</span>
                 </button>
-
                 <button onclick="resetAllData()" class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-rose-600 bg-slate-100 hover:bg-rose-50 rounded-lg transition-all flex items-center gap-1.5">
                     <i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Reset Form</span>
-                </button>
-                <button onclick="window.print()" class="px-3.5 py-1.5 text-xs font-semibold text-white bg-slate-800 hover:bg-slate-900 rounded-lg shadow transition-all flex items-center gap-1.5">
-                    <i class="fa-solid fa-print"></i> <span>Cetak / PDF</span>
                 </button>
             </div>
         </div>
@@ -159,39 +111,16 @@
         <!-- LEFT COLUMN: INPUT FORM & CALCULATIONS (7 Cols) -->
         <div class="lg:col-span-7 space-y-6">
 
-            <!-- RESEP TERSIMPAN (LOCALSTORAGE) -->
-            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm no-print">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
-                        <i class="fa-solid fa-bookmark text-amber-500"></i> Resep & HPP Tersimpan Saya
-                    </span>
-                    <button onclick="saveCurrentRecipe()" class="px-3 py-1.5 text-xs font-bold text-white bg-emeraldCustom-600 hover:bg-emeraldCustom-500 rounded-xl shadow-sm transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-floppy-disk"></i> Simpan Resep Ini
-                    </button>
-                </div>
-                <div id="savedRecipesList" class="flex flex-wrap gap-2">
-                    <!-- Dynamic saved recipes list -->
-                </div>
-            </div>
-
             <!-- PRESET RESEP POPULER -->
             <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm no-print">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                        <i class="fa-solid fa-wand-magic-sparkles text-brand-500"></i> Muat Resep Contoh (Simulasi Grosir)
+                        <i class="fa-solid fa-wand-magic-sparkles text-brand-500"></i> Muat Resep Contoh
                     </span>
-                    <span class="text-[11px] text-slate-400">Klik untuk langsung mencoba</span>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <button onclick="loadPreset('kopi_susu')" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 transition-all flex items-center gap-1.5">
-                        ☕ Kopi Susu Gula Aren
-                    </button>
-                    <button onclick="loadPreset('ayam_geprek')" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 transition-all flex items-center gap-1.5">
-                        🍗 Ayam Geprek Ricebox
-                    </button>
-                    <button onclick="loadPreset('brownies')" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 transition-all flex items-center gap-1.5">
-                        🍫 Fudgy Brownies Box
-                    </button>
+                    <button onclick="loadPreset('kopi_susu')" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 hover:border-brand-500 hover:bg-brand-50 transition-all">☕ Kopi Susu</button>
+                    <button onclick="loadPreset('ayam_geprek')" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 hover:border-brand-500 hover:bg-brand-50 transition-all">🍗 Ayam Geprek</button>
                 </div>
             </div>
 
@@ -200,14 +129,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Produk / Menu</label>
-                        <input type="text" id="productName" value="Kopi Susu Gula Aren 16oz" oninput="calculateAll()" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none font-semibold text-slate-800" placeholder="Contoh: Ayam Geprek Sambal Bawang">
+                        <input type="text" id="productName" value="Kopi Susu Gula Aren 16oz" oninput="calculateAll()" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none font-semibold text-slate-800" placeholder="Contoh: Ayam Geprek">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Target Porsi per Batch / Resep</label>
-                        <div class="relative">
-                            <input type="number" id="batchPortions" value="1" min="1" oninput="calculateAll()" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none font-semibold text-slate-800 pr-16">
-                            <span class="absolute right-3 top-2.5 text-xs font-medium text-slate-400">Porsi</span>
-                        </div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Target Porsi per Batch</label>
+                        <input type="number" id="batchPortions" value="1" min="1" oninput="calculateAll()" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none font-semibold text-slate-800">
                     </div>
                 </div>
             </div>
@@ -215,152 +141,97 @@
             <!-- SECTION 1: BAHAN BAKU -->
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
                 <div class="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-                    <div>
-                        <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-carrot text-brand-500"></i> 1. Bahan Baku Utama
-                        </h2>
-                        <p class="text-xs text-slate-500">Bahan komposisi resep. Beli karungan/grosir otomatis terhitung.</p>
-                    </div>
-                    <button onclick="addIngredientRow()" class="px-3 py-1.5 text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 rounded-xl shadow-sm transition-all flex items-center gap-1">
-                        <i class="fa-solid fa-plus"></i> Tambah Bahan
-                    </button>
+                    <h2 class="text-base font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-carrot text-brand-500"></i> 1. Bahan Baku Utama</h2>
+                    <button onclick="addIngredientRow()" class="px-3 py-1.5 text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 rounded-xl shadow-sm transition-all"><i class="fa-solid fa-plus"></i> Tambah</button>
                 </div>
-
                 <div class="p-4 sm:p-5 overflow-x-auto">
                     <table class="w-full text-left text-xs border-collapse">
                         <thead>
-                            <tr class="text-slate-400 border-b border-slate-200 uppercase tracking-wider font-bold">
+                            <tr class="text-slate-400 border-b border-slate-200 uppercase font-bold">
                                 <th class="pb-3 min-w-[170px]">Nama Bahan</th>
-                                <th class="pb-3 min-w-[170px]">Harga Beli & Qty Grosir</th>
-                                <th class="pb-3 min-w-[150px]">Pakai per Resep</th>
-                                <th class="pb-3 min-w-[80px]" title="Penyusutan setelah dikupas/dimasak">Yield %</th>
+                                <th class="pb-3 min-w-[170px]">Harga & Qty Beli</th>
+                                <th class="pb-3 min-w-[100px]">Pakai/Resep</th>
+                                <th class="pb-3 min-w-[80px]">Yield %</th>
                                 <th class="pb-3 text-right min-w-[100px]">Biaya (Rp)</th>
-                                <th class="pb-3 text-center w-[40px]"></th>
+                                <th></th>
                             </tr>
                         </thead>
-                        <tbody id="ingredientContainer" class="divide-y divide-slate-100 dark:divide-slate-800">
-                            <!-- Dynamic rows injected by JS -->
-                        </tbody>
+                        <tbody id="ingredientContainer" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
                     </table>
-                    
-                    <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                        <span class="text-xs font-semibold text-slate-600">Total Biaya Bahan Baku (per Porsi):</span>
-                        <span id="subtotalIngredientsText" class="text-sm font-extrabold text-slate-900">Rp 0</span>
-                    </div>
                 </div>
             </div>
 
-            <!-- SECTION 2: KEMASAN & SERVIS PER PORSI -->
-            <div class="bg-white rounded-2xl border border-brand-200/80 dark:border-slate-700 shadow-sm overflow-hidden ring-1 ring-brand-500/10 dark:ring-slate-700">
-                <div class="p-4 sm:p-5 bg-gradient-to-r from-amber-50 to-orange-50/50 dark:from-slate-800 dark:to-slate-800 dark:bg-slate-800 border-b border-amber-200/60 dark:border-slate-700 flex items-center justify-between">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h2 class="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                                <i class="fa-solid fa-box-open text-brand-600 dark:text-brand-400"></i> 2. Kemasan & Servis Per Porsi
-                            </h2>
-                            <span class="text-[10px] font-extrabold bg-brand-500 text-white px-2 py-0.5 rounded-full uppercase tracking-wide">
-                                Mode Grosir
-                            </span>
-                        </div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Input harga beli per pack/dus/grosir — sistem langsung hitung biaya per pcs!</p>
-                    </div>
-                    <button onclick="addPackagingRow()" class="px-3 py-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-xl shadow-sm transition-all flex items-center gap-1">
-                        <i class="fa-solid fa-plus"></i> Tambah Kemasan
-                    </button>
+            <!-- SECTION 2: KEMASAN -->
+            <div class="bg-white rounded-2xl border border-brand-200/80 shadow-sm overflow-hidden">
+                <div class="p-4 sm:p-5 bg-gradient-to-r from-amber-50 to-orange-50/50 dark:from-slate-800 border-b border-amber-200/60 flex items-center justify-between">
+                    <h2 class="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2"><i class="fa-solid fa-box-open text-brand-600"></i> 2. Kemasan & Servis</h2>
+                    <button onclick="addPackagingRow()" class="px-3 py-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-xl shadow-sm transition-all"><i class="fa-solid fa-plus"></i> Tambah</button>
                 </div>
-
                 <div class="p-4 sm:p-5 overflow-x-auto">
                     <table class="w-full text-left text-xs border-collapse">
                         <thead>
-                            <tr class="text-slate-400 border-b border-slate-200 dark:border-slate-700 uppercase tracking-wider font-bold">
-                                <th class="pb-3 min-w-[170px]">Kemasan / Alat Servis</th>
-                                <th class="pb-3 min-w-[170px]">Detail Beli Grosir</th>
-                                <th class="pb-3 min-w-[100px]">Harga per Pcs</th>
+                            <tr class="text-slate-400 border-b border-slate-200 uppercase font-bold">
+                                <th class="pb-3 min-w-[170px]">Kemasan</th>
+                                <th class="pb-3 min-w-[170px]">Detail Beli</th>
                                 <th class="pb-3 min-w-[90px]">Pakai/Porsi</th>
                                 <th class="pb-3 text-right min-w-[100px]">Total (Rp)</th>
-                                <th class="pb-3 text-center w-[40px]"></th>
+                                <th></th>
                             </tr>
                         </thead>
-                        <tbody id="packagingContainer" class="divide-y divide-slate-100 dark:divide-slate-800">
-                            <!-- Dynamic Packaging Rows injected by JS -->
-                        </tbody>
+                        <tbody id="packagingContainer" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
                     </table>
-
-                    <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center bg-amber-50/60 dark:bg-slate-800/80 p-3 rounded-xl border border-amber-100 dark:border-slate-700">
-                        <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">Total Biaya Kemasan & Servis (per Porsi):</span>
-                        <span id="subtotalPackagingText" class="text-sm font-extrabold text-brand-700 dark:text-brand-400">Rp 0</span>
-                    </div>
                 </div>
             </div>
 
-            <!-- SECTION 3: BIAYA OPERASIONAL & OVERHEAD -->
+            <!-- SECTION 3: BIAYA OPERASIONAL -->
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-                <div class="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-                    <div>
-                        <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-bolt text-amber-500"></i> 3. Biaya Operasional / Overhead Bulanan
-                        </h2>
-                        <p class="text-xs text-slate-500">Listrik, Gas, Sewa Tempat, Gaji, Wi-Fi yang dialokasikan per porsi.</p>
-                    </div>
+                <div class="p-4 sm:p-5 bg-slate-50 border-b border-slate-200">
+                    <h2 class="text-base font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-bolt text-amber-500"></i> 3. Biaya Operasional / Overhead</h2>
                 </div>
-
                 <div class="p-4 sm:p-5 space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Total Biaya Operasional Tetap / Bulan (Rp)</label>
-                            <input type="number" id="monthlyOverhead" value="1500000" oninput="calculateAll()" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none font-semibold" placeholder="Contoh: 2000000">
-                            <span class="text-[11px] text-slate-400 mt-1 block">(Listrik + Sewa + Gaji + Gas + Dll)</span>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Total Biaya Operasional / Bulan (Rp)</label>
+                            <input type="number" id="monthlyOverhead" value="1500000" oninput="calculateAll()" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none font-semibold">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Estimasi Target Penjualan / Bulan (Porsi)</label>
-                            <input type="number" id="monthlyPortions" value="1000" oninput="calculateAll()" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none font-semibold" placeholder="Contoh: 1000">
-                            <span class="text-[11px] text-slate-400 mt-1 block">Total semua porsi/cup yang dijual per bulan</span>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Estimasi Penjualan / Bulan (Porsi)</label>
+                            <input type="number" id="monthlyPortions" value="1000" oninput="calculateAll()" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none font-semibold">
                         </div>
-                    </div>
-
-                    <div class="p-3 bg-slate-100 rounded-xl flex justify-between items-center text-xs">
-                        <span class="font-medium text-slate-600">Beban Biaya Operasional per Porsi:</span>
-                        <span id="overheadPerPortionText" class="font-bold text-slate-900">Rp 0 / porsi</span>
                     </div>
                 </div>
             </div>
 
-            <!-- SECTION 4: MARGIN, OJOL & PEMBULATAN HARGA -->
+            <!-- SECTION 4: MARGIN, OJOL, & PROMO -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
                 <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-chart-line text-emeraldCustom-500"></i> 4. Target Margin Profit & Platform Ojol
+                    <i class="fa-solid fa-chart-line text-emeraldCustom-500"></i> 4. Target Margin, Ojol & Diskon Promo
                 </h2>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Target Margin Keuntungan Bersih (%)</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Margin Profit (%)</label>
                         <div class="flex items-center gap-2">
-                            <input type="range" id="marginRange" min="10" max="80" value="45" oninput="syncMarginInput(this.value)" class="w-full accent-brand-500">
-                            <input type="number" id="marginInput" value="45" oninput="syncMarginRange(this.value)" class="w-20 px-2 py-1.5 text-sm border border-slate-300 rounded-xl font-bold text-center">
-                            <span class="text-xs font-bold">%</span>
+                            <input type="range" id="marginRange" min="5" max="80" value="45" oninput="syncMarginInput(this.value)" class="w-full accent-brand-500">
+                            <input type="number" id="marginInput" value="45" oninput="syncMarginRange(this.value)" class="w-16 px-1 py-1.5 text-sm border border-slate-300 rounded-xl font-bold text-center">
                         </div>
-                        <span class="text-[11px] text-slate-400 mt-1 block">Rekomendasi F&B: 40% - 60%</span>
                     </div>
-
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Potongan Komisi Merchant Ojol / Food</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Komisi Ojol</label>
                         <select id="ojolRate" onchange="calculateAll()" class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none font-medium">
-                            <option value="0">Dapur / Direct Sell (0%)</option>
-                            <option value="0.20" selected>GoFood / GrabFood / ShopeeFood (20%)</option>
-                            <option value="0.201000">GoFood Plus (20% + Rp 1.000)</option>
-                            <option value="0.15">TikTok Shop / Merchant Khusus (15%)</option>
-                            <option value="0.10">Aplikasi Lokal / Member (10%)</option>
+                            <option value="0">Dapur (0%)</option>
+                            <option value="0.20" selected>GoFood/Grab (20%)</option>
+                            <option value="0.15">TikTok Shop (15%)</option>
                         </select>
                     </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Pembulatan Harga Jual</label>
-                    <select id="roundingOption" onchange="calculateAll()" class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none font-medium">
-                        <option value="1000" selected>Bulatkan ke Rp 1.000 Keatas (Contoh: Rp 14.200 ➔ Rp 15.000)</option>
-                        <option value="500">Bulatkan ke Rp 500 Keatas (Contoh: Rp 14.200 ➔ Rp 14.500)</option>
-                        <option value="none">Tanpa Pembulatan (Harga Pas Matematika)</option>
-                    </select>
+                    <!-- FITUR BARU: SIMULASI PROMO -->
+                    <div class="bg-amber-50 dark:bg-slate-800 p-2 rounded-xl border border-amber-200 dark:border-slate-700">
+                        <label class="block text-xs font-bold text-amber-700 dark:text-amber-400 mb-1"><i class="fa-solid fa-tag"></i> Simulasi Diskon Promo (%)</label>
+                        <div class="relative">
+                            <input type="number" id="promoDiscount" value="0" min="0" max="100" oninput="calculateAll()" class="w-full px-3.5 py-1.5 text-sm border border-amber-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none font-bold text-slate-800 bg-white">
+                            <span class="absolute right-3 top-1.5 text-xs font-bold text-slate-400">%</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -371,31 +242,35 @@
 
             <!-- MAIN RESULT CARD -->
             <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6 rounded-3xl shadow-xl border border-slate-700 sticky top-20">
+                
+                <!-- FITUR BARU: PERINGATAN MARGIN KRITIS -->
+                <div id="marginWarning" class="hidden mb-4 bg-rose-500/20 border border-rose-500/50 text-rose-300 p-3 rounded-xl text-xs font-semibold flex items-start gap-2 animate-pulse">
+                    <i class="fa-solid fa-triangle-exclamation mt-0.5"></i>
+                    <span id="warningMessage">Peringatan: Margin keuntungan sangat tipis atau merugi!</span>
+                </div>
+
                 <div class="flex items-center justify-between pb-4 border-b border-slate-700/80">
                     <span class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                        <i class="fa-solid fa-calculator text-brand-500"></i> Ringkasan HPP & Harga Jual
+                        <i class="fa-solid fa-calculator text-brand-500"></i> Ringkasan Harga & HPP
                     </span>
-                    <span id="productBadgeName" class="text-xs font-semibold bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700 text-amber-400 truncate max-w-[150px]">
-                        Kopi Susu Gula Aren
+                    <span id="productBadgeName" class="text-xs font-semibold bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700 text-amber-400 truncate max-w-[130px]">
+                        Menu
                     </span>
                 </div>
 
-                <!-- HPP BREAKDOWN TABLE -->
+                <!-- HPP BREAKDOWN -->
                 <div class="py-4 space-y-2 text-xs border-b border-slate-700/80">
                     <div class="flex justify-between items-center text-slate-300">
-                        <span>Biaya Bahan Baku:</span>
-                        <span id="summaryIngredients" class="font-bold">Rp 0</span>
+                        <span>Biaya Bahan Baku:</span><span id="summaryIngredients" class="font-bold">Rp 0</span>
                     </div>
                     <div class="flex justify-between items-center text-slate-300">
-                        <span class="flex items-center gap-1">Biaya Kemasan & Servis <i class="fa-solid fa-box text-[10px] text-brand-400"></i>:</span>
-                        <span id="summaryPackaging" class="font-bold text-amber-300">Rp 0</span>
+                        <span>Biaya Kemasan:</span><span id="summaryPackaging" class="font-bold text-amber-300">Rp 0</span>
                     </div>
                     <div class="flex justify-between items-center text-slate-300">
-                        <span>Biaya Operasional (Overhead):</span>
-                        <span id="summaryOverhead" class="font-bold">Rp 0</span>
+                        <span>Biaya Operasional:</span><span id="summaryOverhead" class="font-bold">Rp 0</span>
                     </div>
                     <div class="pt-2 border-t border-slate-700/50 flex justify-between items-center text-sm">
-                        <span class="font-extrabold text-slate-100">TOTAL HPP BERSIH / PORSI:</span>
+                        <span class="font-extrabold text-slate-100">TOTAL HPP BERSIH:</span>
                         <span id="summaryTotalHPP" class="font-black text-emerald-400 text-base">Rp 0</span>
                     </div>
                 </div>
@@ -403,16 +278,16 @@
                 <!-- PRICING RECOMMENDATIONS -->
                 <div class="py-5 space-y-4">
                     <!-- OFFLINE PRICE -->
-                    <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80">
+                    <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 relative overflow-hidden">
                         <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
-                            <span class="font-semibold text-slate-300 flex items-center gap-1">
-                                <i class="fa-solid fa-store text-emerald-400"></i> Harga Jual Dapur / Offline
-                            </span>
-                            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">Direct Sell</span>
+                            <span class="font-semibold text-slate-300 flex items-center gap-1"><i class="fa-solid fa-store text-emerald-400"></i> Harga Jual Dapur</span>
                         </div>
-                        <div id="priceOfflineText" class="text-2xl font-black text-white">Rp 0</div>
+                        <div class="flex items-baseline gap-2">
+                            <div id="priceOfflineText" class="text-2xl font-black text-white">Rp 0</div>
+                            <div id="priceOfflineCoret" class="text-sm font-medium text-slate-500 line-through hidden">Rp 0</div>
+                        </div>
                         <div class="flex justify-between items-center mt-2 text-[11px] text-slate-400">
-                            <span>Estimasi Profit Bersih:</span>
+                            <span>Profit Bersih:</span>
                             <span id="profitOfflineText" class="font-bold text-emerald-400">Rp 0 / porsi</span>
                         </div>
                     </div>
@@ -420,171 +295,94 @@
                     <!-- ONLINE OJOL PRICE -->
                     <div class="bg-gradient-to-r from-brand-900/40 to-amber-900/40 p-4 rounded-2xl border border-brand-500/30">
                         <div class="flex items-center justify-between text-xs text-amber-300 mb-1">
-                            <span class="font-semibold flex items-center gap-1">
-                                <i class="fa-solid fa-motorcycle text-brand-400"></i> Harga Jual Aplikasi Ojol
-                            </span>
-                            <span class="text-[10px] bg-brand-500 text-white px-2 py-0.5 rounded-full font-bold">Margin Aman</span>
+                            <span class="font-semibold flex items-center gap-1"><i class="fa-solid fa-motorcycle text-brand-400"></i> Harga Jual Aplikasi Ojol</span>
                         </div>
                         <div id="priceOnlineText" class="text-2xl font-black text-amber-300">Rp 0</div>
                         <div class="flex justify-between items-center mt-2 text-[11px] text-slate-300">
-                            <span>Nett Terima dari Merchant:</span>
+                            <span>Nett Terima Pencairan:</span>
                             <span id="nettOjolText" class="font-bold text-white">Rp 0</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- VISUAL CHART -->
-                <div class="pt-2 no-print">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">Visual Porsi Komposisi Harga Jual (Dapur)</span>
-                    <div class="h-44 w-full flex items-center justify-center">
-                        <canvas id="costChart"></canvas>
+                <!-- FITUR BARU: KALKULATOR BEP (BREAK EVEN POINT) -->
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700 mt-2">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2"><i class="fa-solid fa-bullseye text-brand-500"></i> Target Penjualan (BEP)</span>
+                    <p class="text-xs text-slate-300 mb-2">Agar tidak rugi bayar operasional (sewa, gaji, dll), Anda wajib menjual minimal:</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-center bg-slate-900 px-3 py-2 rounded-xl flex-1 mr-2 border border-slate-700">
+                            <div id="bepMonthText" class="text-lg font-black text-amber-400">0</div>
+                            <div class="text-[10px] text-slate-500 uppercase">Porsi / Bulan</div>
+                        </div>
+                        <div class="text-center bg-slate-900 px-3 py-2 rounded-xl flex-1 ml-2 border border-slate-700">
+                            <div id="bepDayText" class="text-lg font-black text-emerald-400">0</div>
+                            <div class="text-[10px] text-slate-500 uppercase">Porsi / Hari</div>
+                        </div>
                     </div>
                 </div>
 
             </div>
-
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-white border-t border-slate-200 py-6 mt-12 no-print transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
-            <p class="font-semibold text-slate-700">HitangHitung — Platform Hitung HPP & Strategi Keuangan UMKM Indonesia</p>
-            <p class="mt-1">Dibuat khusus untuk pengusaha F&B, Warung, Cafe, & Resto Kreatif.</p>
-        </div>
-    </footer>
-
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // LocalStorage Keys
-        const STORAGE_KEY = 'hitanghitung_saved_recipes_v2';
         const THEME_KEY = 'hitanghitung_theme';
 
-        // State
-        let chartInstance = null;
-
-        // Preset Data Examples
         const presets = {
             kopi_susu: {
-                name: "Kopi Susu Gula Aren 16oz",
-                batch: 1,
+                name: "Kopi Susu Gula Aren 16oz", batch: 1,
                 ingredients: [
-                    { name: "Espresso (Houseblend)", grosirPrice: 120000, grosirQty: 1000, recipeQty: 18, yieldPct: 100 },
-                    { name: "Susu UHT Full Cream", grosirPrice: 20000, grosirQty: 1000, recipeQty: 120, yieldPct: 100 },
-                    { name: "Sirup Gula Aren Cair", grosirPrice: 35000, grosirQty: 1000, recipeQty: 25, yieldPct: 100 },
-                    { name: "Es Batu (Ice Cube)", grosirPrice: 10000, grosirQty: 10000, recipeQty: 150, yieldPct: 100 }
+                    { name: "Espresso", grosirPrice: 120000, grosirQty: 1000, recipeQty: 18, yieldPct: 100 },
+                    { name: "Susu UHT", grosirPrice: 20000, grosirQty: 1000, recipeQty: 120, yieldPct: 100 }
                 ],
                 packaging: [
-                    { name: "Paper Cup / Cup Plastik 16oz", grosirPrice: 125000, grosirQty: 500, qtyPerPortion: 1 },
-                    { name: "Tutup Cembung / Lid", grosirPrice: 35000, grosirQty: 500, qtyPerPortion: 1 },
-                    { name: "Sedotan Steril Pack", grosirPrice: 18000, grosirQty: 200, qtyPerPortion: 1 },
-                    { name: "Stiker Logo Stempel", grosirPrice: 50000, grosirQty: 250, qtyPerPortion: 1 },
-                    { name: "Kantong Plastik Takeaway", grosirPrice: 15000, grosirQty: 100, qtyPerPortion: 1 }
+                    { name: "Paper Cup 16oz", grosirPrice: 125000, grosirQty: 500, qtyPerPortion: 1 }
                 ]
             },
             ayam_geprek: {
-                name: "Ayam Geprek Ricebox Sambal Bawang",
-                batch: 1,
+                name: "Ayam Geprek Ricebox", batch: 1,
                 ingredients: [
-                    { name: "Daging Ayam Potong", grosirPrice: 40000, grosirQty: 1000, recipeQty: 150, yieldPct: 90 },
-                    { name: "Beras Putih Pulen", grosirPrice: 140000, grosirQty: 10000, recipeQty: 100, yieldPct: 100 },
-                    { name: "Tepung Bumbu Crispy", grosirPrice: 25000, grosirQty: 1000, recipeQty: 40, yieldPct: 100 },
-                    { name: "Cabai Rawit Merah & Bumbu", grosirPrice: 50000, grosirQty: 1000, recipeQty: 20, yieldPct: 95 },
-                    { name: "Minyak Goreng", grosirPrice: 180000, grosirQty: 12000, recipeQty: 50, yieldPct: 100 }
+                    { name: "Daging Ayam", grosirPrice: 40000, grosirQty: 1000, recipeQty: 150, yieldPct: 90 },
+                    { name: "Beras Putih", grosirPrice: 140000, grosirQty: 10000, recipeQty: 100, yieldPct: 100 }
                 ],
                 packaging: [
-                    { name: "Paper Lunchbox L", grosirPrice: 180000, grosirQty: 200, qtyPerPortion: 1 },
-                    { name: "Sendok Plastik Bening", grosirPrice: 15000, grosirQty: 100, qtyPerPortion: 1 },
-                    { name: "Tissue Set & Kertas Alas", grosirPrice: 20000, grosirQty: 250, qtyPerPortion: 1 },
-                    { name: "Kantong Plastik Kresek", grosirPrice: 12000, grosirQty: 100, qtyPerPortion: 1 }
-                ]
-            },
-            brownies: {
-                name: "Fudgy Brownies Shiny Crust 20x10",
-                batch: 2,
-                ingredients: [
-                    { name: "Cokelat Batang (DCC)", grosirPrice: 65000, grosirQty: 1000, recipeQty: 250, yieldPct: 100 },
-                    { name: "Mentega / Margarin", grosirPrice: 28000, grosirQty: 1000, recipeQty: 100, yieldPct: 100 },
-                    { name: "Tepung Terigu Sedang", grosirPrice: 12000, grosirQty: 1000, recipeQty: 120, yieldPct: 100 },
-                    { name: "Telur Ayam Fresh", grosirPrice: 28000, grosirQty: 16, recipeQty: 4, yieldPct: 100 },
-                    { name: "Gula Halus", grosirPrice: 18000, grosirQty: 1000, recipeQty: 150, yieldPct: 100 }
-                ],
-                packaging: [
-                    { name: "Box Brownies Window 20x10", grosirPrice: 125000, grosirQty: 50, qtyPerPortion: 1 },
-                    { name: "Kertas Baking & Stiker Seal", grosirPrice: 20000, grosirQty: 50, qtyPerPortion: 1 },
-                    { name: "Pisau Plastik Brownies", grosirPrice: 15000, grosirQty: 50, qtyPerPortion: 1 }
+                    { name: "Paper Lunchbox", grosirPrice: 180000, grosirQty: 200, qtyPerPortion: 1 }
                 ]
             }
         };
 
-        // --- MODE GELAP LOGIC ---
         function initTheme() {
             const savedTheme = localStorage.getItem(THEME_KEY);
             if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
-                updateThemeUI(true);
-            } else {
-                document.documentElement.classList.remove('dark');
-                updateThemeUI(false);
             }
         }
 
         function toggleDarkMode() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
-            updateThemeUI(isDark);
         }
 
-        function updateThemeUI(isDark) {
-            const icon = document.getElementById('themeToggleIcon');
-            const text = document.getElementById('themeToggleText');
-            if (icon && text) {
-                if (isDark) {
-                    icon.className = 'fa-solid fa-sun text-amber-400';
-                    text.textContent = 'Mode Terang';
-                } else {
-                    icon.className = 'fa-solid fa-moon';
-                    text.textContent = 'Mode Gelap';
-                }
-            }
-        }
-
-        // --- INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', () => {
             initTheme();
             loadPreset('kopi_susu');
-            renderSavedRecipesUI();
-            initChart();
         });
 
-        // --- DYNAMIC FORM HANDLERS ---
         function addIngredientRow(data = {}) {
             const container = document.getElementById('ingredientContainer');
             const tr = document.createElement('tr');
-            tr.className = 'ingredient-row border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors';
-            
+            tr.className = 'ingredient-row border-b border-slate-100 dark:border-slate-800';
             tr.innerHTML = `
-                <td class="py-2.5 pr-2">
-                    <input type="text" value="${data.name || ''}" placeholder="Nama Bahan" class="ing-name w-full px-2.5 py-1.5 border border-slate-200 rounded-lg outline-none focus:border-brand-500 font-medium text-xs">
+                <td class="py-2.5 pr-2"><input type="text" value="${data.name || ''}" class="ing-name w-full px-2 py-1.5 border border-slate-200 rounded-lg text-xs"></td>
+                <td class="py-2.5 pr-2 flex gap-1">
+                    <input type="number" value="${data.grosirPrice || ''}" oninput="calculateAll()" placeholder="Rp" class="ing-gprice w-1/2 px-2 py-1.5 border rounded-lg text-xs">
+                    <input type="number" value="${data.grosirQty || ''}" oninput="calculateAll()" placeholder="Qty" class="ing-gqty w-1/2 px-2 py-1.5 border rounded-lg text-xs">
                 </td>
-                <td class="py-2.5 pr-2">
-                    <div class="flex gap-1">
-                        <input type="number" value="${data.grosirPrice || ''}" oninput="calculateAll()" placeholder="Harga Rp" class="ing-gprice w-1/2 px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs">
-                        <input type="number" value="${data.grosirQty || ''}" oninput="calculateAll()" placeholder="Qty Beli" class="ing-gqty w-1/2 px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs">
-                    </div>
-                </td>
-                <td class="py-2.5 pr-2">
-                    <input type="number" value="${data.recipeQty || ''}" oninput="calculateAll()" placeholder="Qty Pakai" class="ing-rqty w-full px-2.5 py-1.5 border border-slate-200 rounded-lg outline-none text-xs font-semibold">
-                </td>
-                <td class="py-2.5 pr-2">
-                    <input type="number" value="${data.yieldPct || 100}" oninput="calculateAll()" placeholder="100" class="ing-yield w-full px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs text-center">
-                </td>
-                <td class="py-2.5 pr-2 text-right font-bold text-slate-800 dark:text-slate-200 ing-cost">
-                    Rp 0
-                </td>
-                <td class="py-2.5 text-center">
-                    <button onclick="removeRow(this)" class="text-slate-300 hover:text-rose-500 transition-colors p-1"><i class="fa-solid fa-trash-can"></i></button>
-                </td>
+                <td class="py-2.5 pr-2"><input type="number" value="${data.recipeQty || ''}" oninput="calculateAll()" class="ing-rqty w-full px-2 py-1.5 border rounded-lg text-xs"></td>
+                <td class="py-2.5 pr-2"><input type="number" value="${data.yieldPct || 100}" oninput="calculateAll()" class="ing-yield w-full px-2 py-1.5 border rounded-lg text-xs text-center"></td>
+                <td class="py-2.5 pr-2 text-right font-bold text-xs ing-cost">Rp 0</td>
+                <td class="py-2.5 text-center"><button onclick="removeRow(this)" class="text-rose-500"><i class="fa-solid fa-trash-can"></i></button></td>
             `;
             container.appendChild(tr);
             calculateAll();
@@ -593,312 +391,155 @@
         function addPackagingRow(data = {}) {
             const container = document.getElementById('packagingContainer');
             const tr = document.createElement('tr');
-            tr.className = 'packaging-row border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors';
-
+            tr.className = 'packaging-row border-b border-slate-100 dark:border-slate-800';
             tr.innerHTML = `
-                <td class="py-2.5 pr-2">
-                    <input type="text" value="${data.name || ''}" placeholder="Nama Kemasan" class="pkg-name w-full px-2.5 py-1.5 border border-slate-200 rounded-lg outline-none focus:border-brand-500 font-medium text-xs">
+                <td class="py-2.5 pr-2"><input type="text" value="${data.name || ''}" class="pkg-name w-full px-2 py-1.5 border border-slate-200 rounded-lg text-xs"></td>
+                <td class="py-2.5 pr-2 flex gap-1">
+                    <input type="number" value="${data.grosirPrice || ''}" oninput="calculateAll()" placeholder="Rp" class="pkg-gprice w-1/2 px-2 py-1.5 border rounded-lg text-xs">
+                    <input type="number" value="${data.grosirQty || ''}" oninput="calculateAll()" placeholder="Qty" class="pkg-gqty w-1/2 px-2 py-1.5 border rounded-lg text-xs">
                 </td>
-                <td class="py-2.5 pr-2">
-                    <div class="flex gap-1">
-                        <input type="number" value="${data.grosirPrice || ''}" oninput="calculateAll()" placeholder="Harga Dus" class="pkg-gprice w-1/2 px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs">
-                        <input type="number" value="${data.grosirQty || ''}" oninput="calculateAll()" placeholder="Isi Pcs" class="pkg-gqty w-1/2 px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs">
-                    </div>
-                </td>
-                <td class="py-2.5 pr-2 font-medium text-slate-500 dark:text-slate-400 pkg-unit-price">
-                    Rp 0
-                </td>
-                <td class="py-2.5 pr-2">
-                    <input type="number" value="${data.qtyPerPortion || 1}" oninput="calculateAll()" placeholder="1" class="pkg-use w-full px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs text-center font-semibold">
-                </td>
-                <td class="py-2.5 pr-2 text-right font-bold text-slate-800 dark:text-slate-200 pkg-cost">
-                    Rp 0
-                </td>
-                <td class="py-2.5 text-center">
-                    <button onclick="removeRow(this)" class="text-slate-300 hover:text-rose-500 transition-colors p-1"><i class="fa-solid fa-trash-can"></i></button>
-                </td>
+                <td class="py-2.5 pr-2"><input type="number" value="${data.qtyPerPortion || 1}" oninput="calculateAll()" class="pkg-use w-full px-2 py-1.5 border rounded-lg text-xs text-center"></td>
+                <td class="py-2.5 pr-2 text-right font-bold text-xs pkg-cost">Rp 0</td>
+                <td class="py-2.5 text-center"><button onclick="removeRow(this)" class="text-rose-500"><i class="fa-solid fa-trash-can"></i></button></td>
             `;
             container.appendChild(tr);
             calculateAll();
         }
 
-        function removeRow(btn) {
-            btn.closest('tr').remove();
-            calculateAll();
-        }
+        function removeRow(btn) { btn.closest('tr').remove(); calculateAll(); }
+        function syncMarginInput(val) { document.getElementById('marginInput').value = val; calculateAll(); }
+        function syncMarginRange(val) { document.getElementById('marginRange').value = val; calculateAll(); }
 
-        function syncMarginInput(val) {
-            document.getElementById('marginInput').value = val;
-            calculateAll();
-        }
-
-        function syncMarginRange(val) {
-            document.getElementById('marginRange').value = val;
-            calculateAll();
-        }
-
-        // --- CALCULATIONS ENGINE ---
         function calculateAll() {
             const batchPortions = Math.max(1, parseFloat(document.getElementById('batchPortions').value) || 1);
-            const productName = document.getElementById('productName').value || 'Nama Produk';
-            document.getElementById('productBadgeName').textContent = productName;
+            document.getElementById('productBadgeName').textContent = document.getElementById('productName').value || 'Menu';
 
             // 1. Ingredients Cost
             let totalIngredientsBatch = 0;
-            const ingRows = document.querySelectorAll('.ingredient-row');
-            ingRows.forEach(row => {
+            document.querySelectorAll('.ingredient-row').forEach(row => {
                 const price = parseFloat(row.querySelector('.ing-gprice').value) || 0;
                 const gQty = parseFloat(row.querySelector('.ing-gqty').value) || 0;
                 const rQty = parseFloat(row.querySelector('.ing-rqty').value) || 0;
                 const yieldPct = Math.max(1, parseFloat(row.querySelector('.ing-yield').value) || 100) / 100;
-
-                let rowCost = 0;
-                if (gQty > 0) {
-                    const unitPrice = price / gQty;
-                    rowCost = (rQty * unitPrice) / yieldPct;
-                }
+                let rowCost = (gQty > 0) ? ((rQty * (price / gQty)) / yieldPct) : 0;
                 totalIngredientsBatch += rowCost;
                 row.querySelector('.ing-cost').textContent = formatRp(rowCost);
             });
-
             const ingredientsPerPortion = totalIngredientsBatch / batchPortions;
-            document.getElementById('subtotalIngredientsText').textContent = formatRp(ingredientsPerPortion);
 
             // 2. Packaging Cost
             let totalPackagingPerPortion = 0;
-            const pkgRows = document.querySelectorAll('.packaging-row');
-            pkgRows.forEach(row => {
+            document.querySelectorAll('.packaging-row').forEach(row => {
                 const gPrice = parseFloat(row.querySelector('.pkg-gprice').value) || 0;
                 const gQty = parseFloat(row.querySelector('.pkg-gqty').value) || 0;
                 const useQty = parseFloat(row.querySelector('.pkg-use').value) || 0;
-
-                let unitPrice = 0;
-                if (gQty > 0) {
-                    unitPrice = gPrice / gQty;
-                }
-                const rowCost = unitPrice * useQty;
+                let rowCost = (gQty > 0) ? ((gPrice / gQty) * useQty) : 0;
                 totalPackagingPerPortion += rowCost;
-
-                row.querySelector('.pkg-unit-price').textContent = formatRp(unitPrice);
                 row.querySelector('.pkg-cost').textContent = formatRp(rowCost);
             });
-            document.getElementById('subtotalPackagingText').textContent = formatRp(totalPackagingPerPortion);
 
             // 3. Overhead Cost
             const monthlyOverhead = parseFloat(document.getElementById('monthlyOverhead').value) || 0;
             const monthlyPortions = Math.max(1, parseFloat(document.getElementById('monthlyPortions').value) || 1);
             const overheadPerPortion = monthlyOverhead / monthlyPortions;
-            document.getElementById('overheadPerPortionText').textContent = `${formatRp(overheadPerPortion)} / porsi`;
 
-            // 4. Total HPP
+            // 4. Total HPP & Update DOM
             const totalHPP = ingredientsPerPortion + totalPackagingPerPortion + overheadPerPortion;
+            const variableCost = ingredientsPerPortion + totalPackagingPerPortion; // Untuk hitung BEP
             
             document.getElementById('summaryIngredients').textContent = formatRp(ingredientsPerPortion);
             document.getElementById('summaryPackaging').textContent = formatRp(totalPackagingPerPortion);
             document.getElementById('summaryOverhead').textContent = formatRp(overheadPerPortion);
             document.getElementById('summaryTotalHPP').textContent = formatRp(totalHPP);
 
-            // 5. Pricing Strategy
+            // 5. Pricing Strategy & Diskon Promo
             const marginPct = (parseFloat(document.getElementById('marginInput').value) || 45) / 100;
-            const rounding = document.getElementById('roundingOption').value;
-
-            // Offline Price Formula
+            const promoDiscount = parseFloat(document.getElementById('promoDiscount').value) || 0;
+            
             let rawOfflinePrice = marginPct < 1 ? totalHPP / (1 - marginPct) : totalHPP * 2;
-            let finalOfflinePrice = roundPrice(rawOfflinePrice, rounding);
-            let profitOffline = finalOfflinePrice - totalHPP;
+            let finalOfflinePrice = Math.ceil(rawOfflinePrice / 1000) * 1000; // Pembulatan 1000
 
-            document.getElementById('priceOfflineText').textContent = formatRp(finalOfflinePrice);
-            document.getElementById('profitOfflineText').textContent = `${formatRp(profitOffline)} / porsi`;
+            // Terapkan Diskon Promo
+            let discountedPrice = finalOfflinePrice * (1 - (promoDiscount / 100));
+            let profitOffline = discountedPrice - totalHPP;
 
-            // Online Price Formula
-            const ojolVal = document.getElementById('ojolRate').value;
-            let ojolRate = parseFloat(ojolVal) || 0;
-            let ojolFixed = 0;
-            if (ojolVal === '0.201000') {
-                ojolRate = 0.20;
-                ojolFixed = 1000;
+            // UI Diskon Coret
+            const priceCoretEl = document.getElementById('priceOfflineCoret');
+            if (promoDiscount > 0) {
+                priceCoretEl.textContent = formatRp(finalOfflinePrice);
+                priceCoretEl.classList.remove('hidden');
+            } else {
+                priceCoretEl.classList.add('hidden');
             }
 
-            let rawOnlinePrice = (finalOfflinePrice + ojolFixed) / (1 - ojolRate);
-            let finalOnlinePrice = roundPrice(rawOnlinePrice, rounding);
-            let nettOjol = (finalOnlinePrice * (1 - ojolRate)) - ojolFixed;
+            document.getElementById('priceOfflineText').textContent = formatRp(discountedPrice);
+            document.getElementById('profitOfflineText').textContent = `${formatRp(profitOffline)} / porsi`;
+
+            // Online Price Formula (Asumsi harga Ojol dinaikkan dari harga NORMAL, bukan harga diskon)
+            const ojolRate = parseFloat(document.getElementById('ojolRate').value) || 0;
+            let rawOnlinePrice = finalOfflinePrice / (1 - ojolRate);
+            let finalOnlinePrice = Math.ceil(rawOnlinePrice / 1000) * 1000;
+            let nettOjol = finalOnlinePrice * (1 - ojolRate);
 
             document.getElementById('priceOnlineText').textContent = formatRp(finalOnlinePrice);
             document.getElementById('nettOjolText').textContent = formatRp(nettOjol);
 
-            // Update Chart
-            updateChart(ingredientsPerPortion, totalPackagingPerPortion, overheadPerPortion, profitOffline);
+            // 6. LOGIKA PERINGATAN MARGIN KRITIS (Fitur Baru)
+            const warningEl = document.getElementById('marginWarning');
+            const warningMsg = document.getElementById('warningMessage');
+            const realMarginPct = profitOffline / discountedPrice;
+
+            if (profitOffline <= 0) {
+                warningEl.classList.remove('hidden');
+                warningEl.classList.replace('bg-amber-500/20', 'bg-rose-500/20');
+                warningEl.classList.replace('text-amber-300', 'text-rose-300');
+                warningMsg.innerHTML = '<b>RUGI BANDAR!</b> HPP lebih besar dari harga jual. Kurangi diskon atau naikkan margin.';
+            } else if (realMarginPct < 0.20) {
+                warningEl.classList.remove('hidden');
+                warningEl.classList.replace('bg-rose-500/20', 'bg-amber-500/20');
+                warningEl.classList.replace('text-rose-300', 'text-amber-300');
+                warningMsg.innerHTML = '<b>Margin Kritis!</b> Profit bersih di bawah 20%. Waspada biaya tak terduga.';
+            } else {
+                warningEl.classList.add('hidden');
+            }
+
+            // 7. KALKULATOR BEP (Fitur Baru)
+            // Rumus BEP Porsi = Biaya Tetap (Overhead) / (Harga Jual - Biaya Variabel per porsi)
+            let marginKontribusi = discountedPrice - variableCost;
+            let bepBulan = 0;
+            
+            if (marginKontribusi > 0) {
+                bepBulan = Math.ceil(monthlyOverhead / marginKontribusi);
+            } else {
+                bepBulan = '∞'; // Infinite/Tidak akan pernah BEP karena jual rugi
+            }
+            
+            let bepHari = bepBulan !== '∞' ? Math.ceil(bepBulan / 30) : '∞'; // Asumsi 30 hari kerja
+
+            document.getElementById('bepMonthText').textContent = bepBulan;
+            document.getElementById('bepDayText').textContent = bepHari;
         }
 
-        function roundPrice(val, method) {
-            if (method === '1000') return Math.ceil(val / 1000) * 1000;
-            if (method === '500') return Math.ceil(val / 500) * 500;
-            return Math.round(val);
-        }
+        function formatRp(val) { return 'Rp ' + Math.round(val).toLocaleString('id-ID'); }
 
-        function formatRp(val) {
-            return 'Rp ' + Math.round(val).toLocaleString('id-ID');
-        }
-
-        // --- PRESETS & LOCALSTORAGE ---
         function loadPreset(key) {
             const data = presets[key];
             if (!data) return;
-
             document.getElementById('productName').value = data.name;
             document.getElementById('batchPortions').value = data.batch;
-
             document.getElementById('ingredientContainer').innerHTML = '';
             data.ingredients.forEach(item => addIngredientRow(item));
-
             document.getElementById('packagingContainer').innerHTML = '';
             data.packaging.forEach(item => addPackagingRow(item));
-
             calculateAll();
-        }
-
-        function saveCurrentRecipe() {
-            const name = document.getElementById('productName').value.trim();
-            if (!name) {
-                alert('Silakan masukkan nama produk terlebih dahulu.');
-                return;
-            }
-
-            const recipes = getSavedRecipes();
-            const ingredientsData = [];
-            document.querySelectorAll('.ingredient-row').forEach(row => {
-                ingredientsData.push({
-                    name: row.querySelector('.ing-name').value,
-                    grosirPrice: parseFloat(row.querySelector('.ing-gprice').value) || 0,
-                    grosirQty: parseFloat(row.querySelector('.ing-gqty').value) || 0,
-                    recipeQty: parseFloat(row.querySelector('.ing-rqty').value) || 0,
-                    yieldPct: parseFloat(row.querySelector('.ing-yield').value) || 100
-                });
-            });
-
-            const packagingData = [];
-            document.querySelectorAll('.packaging-row').forEach(row => {
-                packagingData.push({
-                    name: row.querySelector('.pkg-name').value,
-                    grosirPrice: parseFloat(row.querySelector('.pkg-gprice').value) || 0,
-                    grosirQty: parseFloat(row.querySelector('.pkg-gqty').value) || 0,
-                    qtyPerPortion: parseFloat(row.querySelector('.pkg-use').value) || 1
-                });
-            });
-
-            const recipeObj = {
-                id: Date.now(),
-                name: name,
-                batch: parseFloat(document.getElementById('batchPortions').value) || 1,
-                ingredients: ingredientsData,
-                packaging: packagingData
-            };
-
-            recipes.push(recipeObj);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(recipes));
-            renderSavedRecipesUI();
-            alert(`Resep "${name}" berhasil disimpan!`);
-        }
-
-        function getSavedRecipes() {
-            try {
-                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function renderSavedRecipesUI() {
-            const container = document.getElementById('savedRecipesList');
-            const recipes = getSavedRecipes();
-            if (recipes.length === 0) {
-                container.innerHTML = '<span class="text-xs text-slate-400 italic">Belum ada resep tersimpan.</span>';
-                return;
-            }
-
-            container.innerHTML = '';
-            recipes.forEach((item) => {
-                const btn = document.createElement('div');
-                btn.className = 'flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 px-2.5 py-1 rounded-xl transition-all';
-                btn.innerHTML = `
-                    <button onclick="loadSavedRecipe(${item.id})" class="font-medium">${item.name}</button>
-                    <button onclick="deleteSavedRecipe(${item.id})" class="text-slate-400 hover:text-rose-600 ml-1"><i class="fa-solid fa-xmark"></i></button>
-                `;
-                container.appendChild(btn);
-            });
-        }
-
-        function loadSavedRecipe(id) {
-            const recipes = getSavedRecipes();
-            const data = recipes.find(r => r.id === id);
-            if (!data) return;
-
-            document.getElementById('productName').value = data.name;
-            document.getElementById('batchPortions').value = data.batch;
-
-            document.getElementById('ingredientContainer').innerHTML = '';
-            data.ingredients.forEach(item => addIngredientRow(item));
-
-            document.getElementById('packagingContainer').innerHTML = '';
-            data.packaging.forEach(item => addPackagingRow(item));
-
-            calculateAll();
-        }
-
-        function deleteSavedRecipe(id) {
-            let recipes = getSavedRecipes();
-            recipes = recipes.filter(r => r.id !== id);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(recipes));
-            renderSavedRecipesUI();
         }
 
         function resetAllData() {
-            if (confirm('Apakah Anda yakin ingin mengosongkan semua isian form?')) {
-                document.getElementById('productName').value = '';
+            if (confirm('Kosongkan form?')) {
                 document.getElementById('ingredientContainer').innerHTML = '';
                 document.getElementById('packagingContainer').innerHTML = '';
-                addIngredientRow();
-                addPackagingRow();
-                calculateAll();
+                addIngredientRow(); addPackagingRow(); calculateAll();
             }
-        }
-
-        // --- CHART.JS INTEGRATION ---
-        function initChart() {
-            const ctx = document.getElementById('costChart').getContext('2d');
-            chartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Bahan Baku', 'Kemasan', 'Overhead', 'Profit Dapur'],
-                    datasets: [{
-                        data: [0, 0, 0, 0],
-                        backgroundColor: ['#f97316', '#f59e0b', '#64748b', '#10b981'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: { color: '#94a3b8', font: { size: 10 } }
-                        }
-                    },
-                    cutout: '65%'
-                }
-            });
-        }
-
-        function updateChart(ing, pkg, ovh, prf) {
-            if (!chartInstance) return;
-            chartInstance.data.datasets[0].data = [
-                Math.max(0, ing),
-                Math.max(0, pkg),
-                Math.max(0, ovh),
-                Math.max(0, prf)
-            ];
-            chartInstance.update();
         }
     </script>
 </body>
