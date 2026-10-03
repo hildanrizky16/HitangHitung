@@ -94,6 +94,9 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
+                <button onclick="saveRecipe()" id="saveBtn" class="px-3 py-1.5 text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-floppy-disk"></i> <span class="hidden sm:inline">Simpan</span>
+                </button>
                 <button onclick="toggleDarkMode()" id="themeToggleBtn" class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-amber-500 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all flex items-center gap-1.5">
                     <i id="themeToggleIcon" class="fa-solid fa-moon"></i> 
                     <span id="themeToggleText" class="hidden sm:inline">Mode Gelap</span>
@@ -122,6 +125,18 @@
                     <button onclick="loadPreset('kopi_susu')" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 hover:border-brand-500 hover:bg-brand-50 transition-all">☕ Kopi Susu</button>
                     <button onclick="loadPreset('ayam_geprek')" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 hover:border-brand-500 hover:bg-brand-50 transition-all">🍗 Ayam Geprek</button>
                 </div>
+            </div>
+
+            <!-- RESEP TERSIMPAN -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm no-print">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-bookmark text-brand-500"></i> Resep Tersimpan
+                    </span>
+                    <span id="savedCount" class="text-[11px] font-semibold text-slate-400"></span>
+                </div>
+                <div id="savedList" class="space-y-2"></div>
+                <p class="text-[11px] text-slate-400 mt-3">Tersimpan di browser perangkat ini. Hapus data situs atau ganti browser, resepnya ikut hilang.</p>
             </div>
 
             <!-- BASIC INFO FORM -->
@@ -321,13 +336,22 @@
                     </div>
                 </div>
 
+                <!-- AKSI: SIMPAN -->
+                <button onclick="saveRecipe()" class="w-full mt-4 px-3 py-2.5 text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Resep
+                </button>
+
             </div>
         </div>
     </main>
 
+    <!-- TOAST NOTIFIKASI -->
+    <div id="toast" class="no-print fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-xl text-xs font-semibold text-white shadow-lg bg-slate-900 border border-slate-700" role="status" aria-live="polite"></div>
+
     <!-- JAVASCRIPT LOGIC -->
     <script>
         const THEME_KEY = 'hitanghitung_theme';
+        const RECIPES_KEY = 'hitanghitung_recipes';
 
         const presets = {
             kopi_susu: {
@@ -352,6 +376,26 @@
             }
         };
 
+        /* ---------- Helper ---------- */
+        // Escape teks supaya nama bahan yang mengandung tanda kutip / < > tidak merusak HTML
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        let toastTimer = null;
+        function showToast(message, isError = false) {
+            const el = document.getElementById('toast');
+            el.textContent = message;
+            el.classList.toggle('bg-rose-600', isError);
+            el.classList.toggle('bg-slate-900', !isError);
+            el.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.add('hidden'), 2600);
+        }
+
+        /* ---------- Tema ---------- */
         function initTheme() {
             const savedTheme = localStorage.getItem(THEME_KEY);
             if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -367,14 +411,16 @@
         window.addEventListener('DOMContentLoaded', () => {
             initTheme();
             loadPreset('kopi_susu');
+            renderSavedList();
         });
 
+        /* ---------- Baris bahan & kemasan ---------- */
         function addIngredientRow(data = {}) {
             const container = document.getElementById('ingredientContainer');
             const tr = document.createElement('tr');
             tr.className = 'ingredient-row border-b border-slate-100 dark:border-slate-800';
             tr.innerHTML = `
-                <td class="py-2.5 pr-2"><input type="text" value="${data.name || ''}" class="ing-name w-full px-2 py-1.5 border border-slate-200 rounded-lg text-xs"></td>
+                <td class="py-2.5 pr-2"><input type="text" value="${esc(data.name)}" class="ing-name w-full px-2 py-1.5 border border-slate-200 rounded-lg text-xs"></td>
                 <td class="py-2.5 pr-2 flex gap-1">
                     <input type="number" value="${data.grosirPrice || ''}" oninput="calculateAll()" placeholder="Rp" class="ing-gprice w-1/2 px-2 py-1.5 border rounded-lg text-xs">
                     <input type="number" value="${data.grosirQty || ''}" oninput="calculateAll()" placeholder="Qty" class="ing-gqty w-1/2 px-2 py-1.5 border rounded-lg text-xs">
@@ -393,7 +439,7 @@
             const tr = document.createElement('tr');
             tr.className = 'packaging-row border-b border-slate-100 dark:border-slate-800';
             tr.innerHTML = `
-                <td class="py-2.5 pr-2"><input type="text" value="${data.name || ''}" class="pkg-name w-full px-2 py-1.5 border border-slate-200 rounded-lg text-xs"></td>
+                <td class="py-2.5 pr-2"><input type="text" value="${esc(data.name)}" class="pkg-name w-full px-2 py-1.5 border border-slate-200 rounded-lg text-xs"></td>
                 <td class="py-2.5 pr-2 flex gap-1">
                     <input type="number" value="${data.grosirPrice || ''}" oninput="calculateAll()" placeholder="Rp" class="pkg-gprice w-1/2 px-2 py-1.5 border rounded-lg text-xs">
                     <input type="number" value="${data.grosirQty || ''}" oninput="calculateAll()" placeholder="Qty" class="pkg-gqty w-1/2 px-2 py-1.5 border rounded-lg text-xs">
@@ -410,6 +456,7 @@
         function syncMarginInput(val) { document.getElementById('marginInput').value = val; calculateAll(); }
         function syncMarginRange(val) { document.getElementById('marginRange').value = val; calculateAll(); }
 
+        /* ---------- Perhitungan ---------- */
         function calculateAll() {
             const batchPortions = Math.max(1, parseFloat(document.getElementById('batchPortions').value) || 1);
             document.getElementById('productBadgeName').textContent = document.getElementById('productName').value || 'Menu';
@@ -540,6 +587,147 @@
                 document.getElementById('packagingContainer').innerHTML = '';
                 addIngredientRow(); addPackagingRow(); calculateAll();
             }
+        }
+
+        /* =====================================================
+           FITUR SIMPAN RESEP (localStorage)
+           ===================================================== */
+        function readRecipes() {
+            try {
+                const list = JSON.parse(localStorage.getItem(RECIPES_KEY));
+                return Array.isArray(list) ? list : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function writeRecipes(list) {
+            try {
+                localStorage.setItem(RECIPES_KEY, JSON.stringify(list));
+                return true;
+            } catch (e) {
+                return false; // mis. penyimpanan penuh atau diblokir browser
+            }
+        }
+
+        // Ambil seluruh isian form saat ini
+        function getFormState() {
+            const num = id => parseFloat(document.getElementById(id).value) || 0;
+            return {
+                name: document.getElementById('productName').value.trim(),
+                batch: num('batchPortions') || 1,
+                ingredients: [...document.querySelectorAll('.ingredient-row')].map(row => ({
+                    name: row.querySelector('.ing-name').value,
+                    grosirPrice: parseFloat(row.querySelector('.ing-gprice').value) || 0,
+                    grosirQty: parseFloat(row.querySelector('.ing-gqty').value) || 0,
+                    recipeQty: parseFloat(row.querySelector('.ing-rqty').value) || 0,
+                    yieldPct: parseFloat(row.querySelector('.ing-yield').value) || 100
+                })),
+                packaging: [...document.querySelectorAll('.packaging-row')].map(row => ({
+                    name: row.querySelector('.pkg-name').value,
+                    grosirPrice: parseFloat(row.querySelector('.pkg-gprice').value) || 0,
+                    grosirQty: parseFloat(row.querySelector('.pkg-gqty').value) || 0,
+                    qtyPerPortion: parseFloat(row.querySelector('.pkg-use').value) || 1
+                })),
+                monthlyOverhead: num('monthlyOverhead'),
+                monthlyPortions: num('monthlyPortions'),
+                margin: parseFloat(document.getElementById('marginInput').value) || 45,
+                ojolRate: document.getElementById('ojolRate').value,
+                promo: num('promoDiscount')
+            };
+        }
+
+        // Pulihkan isian form dari data yang tersimpan
+        function applyFormState(s) {
+            document.getElementById('productName').value = s.name || '';
+            document.getElementById('batchPortions').value = s.batch || 1;
+            document.getElementById('monthlyOverhead').value = s.monthlyOverhead ?? 0;
+            document.getElementById('monthlyPortions').value = s.monthlyPortions ?? 1;
+            document.getElementById('marginInput').value = s.margin ?? 45;
+            document.getElementById('marginRange').value = s.margin ?? 45;
+            document.getElementById('ojolRate').value = s.ojolRate ?? '0.20';
+            document.getElementById('promoDiscount').value = s.promo ?? 0;
+
+            document.getElementById('ingredientContainer').innerHTML = '';
+            (s.ingredients || []).forEach(item => addIngredientRow(item));
+            document.getElementById('packagingContainer').innerHTML = '';
+            (s.packaging || []).forEach(item => addPackagingRow(item));
+            calculateAll();
+        }
+
+        function saveRecipe() {
+            const state = getFormState();
+            if (!state.name) {
+                showToast('Isi nama produk dulu sebelum menyimpan.', true);
+                document.getElementById('productName').focus();
+                return;
+            }
+
+            const list = readRecipes();
+            const existing = list.find(r => r.name.toLowerCase() === state.name.toLowerCase());
+
+            if (existing) {
+                if (!confirm(`Resep "${state.name}" sudah ada. Timpa dengan data terbaru?`)) return;
+                existing.name = state.name;
+                existing.savedAt = Date.now();
+                existing.data = state;
+            } else {
+                list.unshift({ id: String(Date.now()), name: state.name, savedAt: Date.now(), data: state });
+            }
+
+            if (writeRecipes(list)) {
+                renderSavedList();
+                showToast(existing ? 'Resep diperbarui.' : 'Resep tersimpan.');
+            } else {
+                showToast('Gagal menyimpan. Penyimpanan browser penuh atau diblokir.', true);
+            }
+        }
+
+        function loadSaved(id) {
+            const recipe = readRecipes().find(r => r.id === id);
+            if (!recipe) { showToast('Resep tidak ditemukan.', true); return; }
+            if (!confirm(`Muat "${recipe.name}"? Isian form saat ini akan diganti.`)) return;
+            applyFormState(recipe.data);
+            showToast('Resep dimuat.');
+        }
+
+        function deleteSaved(id) {
+            const list = readRecipes();
+            const recipe = list.find(r => r.id === id);
+            if (!recipe) return;
+            if (!confirm(`Hapus resep "${recipe.name}"?`)) return;
+            if (writeRecipes(list.filter(r => r.id !== id))) {
+                renderSavedList();
+                showToast('Resep dihapus.');
+            } else {
+                showToast('Gagal menghapus resep.', true);
+            }
+        }
+
+        function renderSavedList() {
+            const list = readRecipes();
+            const box = document.getElementById('savedList');
+            document.getElementById('savedCount').textContent = list.length ? `${list.length} resep` : '';
+
+            if (!list.length) {
+                box.innerHTML = '<p class="text-xs text-slate-500">Belum ada resep. Isi form, lalu klik <b>Simpan</b> untuk menyimpannya di sini.</p>';
+                return;
+            }
+
+            box.innerHTML = list.map(r => {
+                const date = new Date(r.savedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                return `
+                <div class="flex items-center justify-between gap-3 p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+                    <div class="min-w-0">
+                        <div class="text-xs font-bold text-slate-800 truncate">${esc(r.name)}</div>
+                        <div class="text-[11px] text-slate-500">Disimpan ${date}</div>
+                    </div>
+                    <div class="flex gap-1.5 shrink-0">
+                        <button onclick="loadSaved('${esc(r.id)}')" class="px-2.5 py-1 text-[11px] font-bold text-brand-600 hover:text-white bg-brand-50 hover:bg-brand-500 border border-brand-100 rounded-lg transition-all">Muat</button>
+                        <button onclick="deleteSaved('${esc(r.id)}')" aria-label="Hapus resep ${esc(r.name)}" class="px-2.5 py-1 text-[11px] font-bold text-rose-600 hover:text-white bg-white hover:bg-rose-500 border border-rose-200 rounded-lg transition-all"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>`;
+            }).join('');
         }
     </script>
 </body>
